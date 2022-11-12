@@ -11,11 +11,9 @@ import run.halo.app.plugin.BasePlugin;
  */
 @Component
 public class SitemapPlugin extends BasePlugin {
-    private final SchemeManager schemeManager;
 
     public SitemapPlugin(PluginWrapper wrapper) {
         super(wrapper);
-        this.schemeManager = getApplicationContext().getBean(SchemeManager.class);
     }
 
     @Override
