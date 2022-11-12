@@ -3,7 +3,6 @@ package run.halo.sitemap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
@@ -11,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.util.UriUtils;
 import run.halo.app.infra.utils.PathUtils;
 
 /**
