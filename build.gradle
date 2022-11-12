@@ -2,19 +2,12 @@ plugins {
     id 'org.springframework.boot' version '3.0.0-M3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "io.github.guqing.plugin-development" version "0.0.5-SNAPSHOT"
-    id "checkstyle"
     id 'java'
 }
 
 group 'run.halo.sitemap'
 version '0.0.1-SNAPSHOT'
 sourceCompatibility = JavaVersion.VERSION_17
-
-checkstyle {
-    toolVersion = "9.3"
-    showViolations = false
-    ignoreFailures = false
-}
 
 repositories {
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
