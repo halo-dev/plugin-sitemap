@@ -36,7 +36,8 @@ public class SitemapPluginConfig {
         DefaultSitemapXmlSupplier sitemapXmlSupplier) {
         return RouterFunctions.route(GET("/sitemap.xml")
             .and(accept(MediaType.TEXT_XML)), request -> sitemapXmlSupplier.get()
-            .flatMap(sitemap -> ServerResponse.ok().bodyValue(sitemap))
+            .flatMap(sitemap -> ServerResponse.ok()
+                .contentType(MediaType.TEXT_XML).bodyValue(sitemap))
         );
     }
 }
