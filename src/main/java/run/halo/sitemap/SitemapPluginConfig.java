@@ -20,24 +20,23 @@ import run.halo.app.infra.ExternalUrlSupplier;
 @AllArgsConstructor
 public class SitemapPluginConfig {
 
+    private final ExternalUrlSupplier externalUrlSupplier;
+
     @Bean
     public SitemapGeneratorOptions sitemapGeneratorOptions()
         throws MalformedURLException {
-        URI siteUrl = UrlUtils.toURI("http://localhost:8090");
+        URI siteUri = externalUrlSupplier.get();
         return SitemapGeneratorOptions.builder()
-            .siteUrl(siteUrl.toURL())
+            .siteUrl(siteUri.toURL())
             .build();
     }
 
     @Bean
-    RouterFunction<ServerResponse> sitemapRouterFunction(SitemapEntryLister sitemapEntryLister) {
+    RouterFunction<ServerResponse> sitemapRouterFunction(
+        DefaultSitemapXmlSupplier sitemapXmlSupplier) {
         return RouterFunctions.route(GET("/sitemap.xml")
-            .and(accept(MediaType.TEXT_XML)), request -> sitemapEntryLister.list()
-            .collectList()
-            .flatMap(sitemapEntries -> {
-                String content = new SitemapBuilder().buildSitemapXml(sitemapEntries);
-                return ServerResponse.ok().bodyValue(content);
-            })
+            .and(accept(MediaType.TEXT_XML)), request -> sitemapXmlSupplier.get()
+            .flatMap(sitemap -> ServerResponse.ok().bodyValue(sitemap))
         );
     }
 }
