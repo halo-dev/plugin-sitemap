@@ -39,9 +39,9 @@ public class SitemapPluginConfig {
 
     @Bean
     RouterFunction<ServerResponse> sitemapRouterFunction(
-        DefaultSitemapXmlSupplier sitemapXmlSupplier) {
+        CachedSitemapGetter cachedSitemapGetter) {
         return RouterFunctions.route(GET("/sitemap.xml")
-            .and(accept(MediaType.TEXT_XML)), request -> sitemapXmlSupplier.get()
+            .and(accept(MediaType.TEXT_XML)), request -> cachedSitemapGetter.get()
             .flatMap(sitemap -> ServerResponse.ok()
                 .contentType(MediaType.TEXT_XML).bodyValue(sitemap))
         );
