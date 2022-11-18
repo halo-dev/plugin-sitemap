@@ -8,8 +8,6 @@ spec:
   requires: "*"
   author: halo-dev
   logo: https://halo.run/logo
-  settingName: sitemap-settings
-  configMapName: sitemap-settings
   homepage: https://github.com/halo-sigs/plugin-sitemap
   displayName: "Sitemap"
   description: "为站点生成站点地图"
