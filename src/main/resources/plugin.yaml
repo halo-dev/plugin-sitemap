@@ -4,7 +4,7 @@ metadata:
   name: PluginSitemap
 spec:
   enabled: true
-  version: 1.0.0-alpha.2
+  version: 1.0.0-alpha.3
   requires: ">=2.0.0-beta.2"
   author: halo-dev
   logo: https://halo.run/logo
