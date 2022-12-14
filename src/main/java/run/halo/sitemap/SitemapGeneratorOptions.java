@@ -37,7 +37,7 @@ public class SitemapGeneratorOptions {
     private boolean allowMultipleSitemaps = true;
 
     @Builder.Default
-    private DateTimeFormatter dateTimeFormatter = W3cDatetimeFormat.MILLISECOND_FORMATTER;
+    private DateTimeFormatter dateTimeFormatter = W3cDatetimeFormat.SECOND_FORMATTER;
 
     /**
      * Split large sitemap into multiple files by specifying sitemap size. Default 5000.
