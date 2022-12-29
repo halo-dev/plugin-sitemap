@@ -60,13 +60,13 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class W3cDatetimeFormat {
     public static final DateTimeFormatter MILLISECOND_FORMATTER =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     public static final DateTimeFormatter SECOND_FORMATTER =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     public static final DateTimeFormatter MINUTE_FORMATTER =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmZ");
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmXXX");
 
     public static String format(Instant instant, DateTimeFormatter formatter) {
         return instant.atZone(ZoneId.systemDefault())
@@ -74,6 +74,6 @@ public final class W3cDatetimeFormat {
     }
 
     public static String format(Instant instant) {
-        return format(instant, MILLISECOND_FORMATTER);
+        return format(instant, SECOND_FORMATTER);
     }
 }
