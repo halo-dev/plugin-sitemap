@@ -22,14 +22,16 @@ import run.halo.app.infra.utils.JsonUtils;
 @Component
 @AllArgsConstructor
 public class DefaultSitemapEntryLister implements SitemapEntryLister {
+
     private final ReactiveExtensionClient client;
-    private final SitemapGeneratorOptions options;
 
     @Override
-    public Flux<SitemapEntry> list() {
-        return Flux.mergeSequential(listPostUrls(), listCategoryUrls(), listTagUrls(),
-                listSinglePageUrls())
-            .concatWith(urlsForListPages())
+    public Flux<SitemapEntry> list(SitemapGeneratorOptions options) {
+        return Flux.mergeSequential(listPostUrls(),
+                listCategoryUrls(),
+                listTagUrls(),
+                listSinglePageUrls(),
+                urlsForListPages())
             .distinct()
             .map(options::transform);
     }

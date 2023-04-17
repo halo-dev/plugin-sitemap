@@ -1,5 +1,6 @@
 plugins {
-    id "io.github.guqing.plugin-development" version "0.0.5-SNAPSHOT"
+    id "io.freefair.lombok" version "8.0.0-rc2"
+    id "io.github.guqing.plugin-development" version "0.0.7-SNAPSHOT"
     id 'java'
 }
 
@@ -7,9 +8,9 @@ group 'run.halo.sitemap'
 sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
+    mavenCentral()
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
     maven { url 'https://repo.spring.io/milestone' }
-    mavenCentral()
 }
 
 jar {
@@ -18,27 +19,14 @@ jar {
     manifest.attributes(
             'Plugin-Version': "${project.version}",
     )
-    from {
-        configurations.runtimeClasspath.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
 }
 
 dependencies {
-    compileOnly platform('run.halo.dependencies:halo-dependencies:1.0.0')
+    implementation platform('run.halo.tools.platform:plugin:2.5.0-SNAPSHOT')
+    compileOnly 'run.halo.app:api'
 
-    compileOnly files("lib/halo-2.0.0-plain.jar")
-
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-
-    testImplementation "com.google.guava:guava"
-    testImplementation 'org.apache.commons:commons-lang3'
-    testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+    testImplementation 'run.halo.app:api'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.projectreactor:reactor-test'
-    testImplementation files("lib/halo-2.0.0-plain.jar")
 }
 
 test {
