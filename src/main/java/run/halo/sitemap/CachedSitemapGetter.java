@@ -13,7 +13,7 @@ import reactor.core.scheduler.Schedulers;
 @AllArgsConstructor
 public class CachedSitemapGetter {
 
-    private final Cache<String, String> cache = CacheBuilder.newBuilder()
+    private final Cache<SitemapGeneratorOptions, String> cache = CacheBuilder.newBuilder()
         .concurrencyLevel(Runtime.getRuntime().availableProcessors())
         .initialCapacity(8)
         .maximumSize(8)
@@ -22,14 +22,13 @@ public class CachedSitemapGetter {
 
     private final DefaultSitemapEntryLister lister;
 
-    public Mono<String> get() {
-        String cacheKey = "sitemap";
-        return Mono.fromCallable(() -> cache.get(cacheKey, () -> lister.list()
+    public Mono<String> get(SitemapGeneratorOptions options) {
+        return Mono.fromCallable(() -> cache.get(options, () -> lister.list(options)
                 .collectList()
                 .map(entries -> {
                     String xml = new SitemapBuilder()
                         .buildSitemapXml(entries);
-                    cache.put(cacheKey, xml);
+                    cache.put(options, xml);
                     return xml;
                 })
                 .defaultIfEmpty(StringUtils.EMPTY)
