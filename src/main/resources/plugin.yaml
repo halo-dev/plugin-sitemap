@@ -4,7 +4,7 @@ metadata:
   name: PluginSitemap
 spec:
   enabled: true
-  version: 1.0.0
+  version: 1.0.2
   requires: ">=2.0.0"
   author:
     name: Halo OSS Team
