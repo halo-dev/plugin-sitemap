@@ -5,11 +5,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import run.halo.app.core.extension.content.Post;
 import run.halo.app.infra.utils.PathUtils;
 
 /**
@@ -55,7 +59,7 @@ public class SitemapGeneratorOptions {
     private ChangeFreqEnum changefreq = ChangeFreqEnum.DAILY;
 
     @Builder.Default
-    private double priority = 0.7;
+    private double priority = 1.0;
 
     /**
      * Add &lt;lastmod/&gt; property. Default true
@@ -79,7 +83,15 @@ public class SitemapGeneratorOptions {
     @Builder.Default
     private boolean generateIndexSitemap = true;
 
-    public SitemapEntry transform(String url) {
+    public SitemapEntry transform(Object object) {
+        String url;
+        Instant lastModifyTime = Instant.now();
+        if (object instanceof Post.PostStatus){
+            url = ((Post.PostStatus) object).getPermalink();
+            lastModifyTime = ((Post.PostStatus) object).getLastModifyTime();
+        }else {
+            url = object.toString();
+        }
         if (StringUtils.isBlank(url)) {
             return null;
         }
@@ -95,7 +107,7 @@ public class SitemapGeneratorOptions {
             .priority(priority);
 
         if (dateTimeFormatter != null && autoLastmod) {
-            builder.lastmod(W3cDatetimeFormat.format(Instant.now(), dateTimeFormatter));
+            builder.lastmod(W3cDatetimeFormat.format(lastModifyTime, dateTimeFormatter));
         }
         return builder.build();
     }
