@@ -1,7 +1,7 @@
 apiVersion: plugin.halo.run/v1alpha1
 kind: Plugin
 metadata:
-  name: PluginSitemap-Custom
+  name: PluginSitemap
 spec:
   enabled: true
   version: 1.0.3
@@ -11,6 +11,8 @@ spec:
     website: https://github.com/halo-dev, https://blog.cnkj.site/
   logo: https://blog.cnkj.site/upload/sitemap.jpg
   homepage: https://redirect.cnkj.site:18092/gitea/plugin-sitemap
+  settingName: plugin-sitemap-settings
+  configMapName: plugin-sitemap-config
   displayName: "Sitemap"
   description: "为站点生成站点地图"
   license:

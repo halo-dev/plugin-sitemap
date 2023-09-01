@@ -7,6 +7,18 @@ spec:
     - group: basic
       label: 基本设置
       formSchema:
+        - $formkit: radio
+          name: enable
+          id: enable
+          key: enable
+          label: 是否启用自定义站点设置
+          help: 禁用后使用自动获取到的站点地址
+          value: false
+          options:
+            - label: 启用
+              value: true
+            - label: 关闭
+              value: false
         - $formkit: text
           if: $get(enable).value
           name: siteUrl

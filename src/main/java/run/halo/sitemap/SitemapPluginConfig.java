@@ -22,26 +22,18 @@ public class SitemapPluginConfig {
 
     private final ExternalUrlSupplier externalUrlSupplier;
 
-    private final DefaultSettingFetcher settingFetcher;
-
     @Bean
     RouterFunction<ServerResponse> sitemapRouterFunction(CachedSitemapGetter cachedSitemapGetter) {
         return RouterFunctions.route(GET("/sitemap.xml")
                 .and(accept(MediaType.TEXT_XML)), request -> {
-                BaseSetting basePushSetting =
-                    settingFetcher.fetch(BaseSetting.CONFIG_MAP_NAME, BaseSetting.GROUP,
-                        BaseSetting.class).orElseGet(BaseSetting::new);
-
-                String siteUrl = basePushSetting.getSiteUrl();
                 var uri = externalUrlSupplier.get();
                 if (!uri.isAbsolute()) {
                     uri = request.exchange().getRequest().getURI().resolve(uri);
                 }
-
                 SitemapGeneratorOptions options;
                 try {
                     options = SitemapGeneratorOptions.builder()
-                        .siteUrl(siteUrl.isEmpty() ? uri.toURL() : toUrl(siteUrl))
+                        .siteUrl(uri.toURL())
                         .build();
                 } catch (MalformedURLException e) {
                     throw Exceptions.propagate(e);
