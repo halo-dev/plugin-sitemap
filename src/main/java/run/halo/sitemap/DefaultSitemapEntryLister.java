@@ -36,11 +36,11 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
             .map(options::transform);
     }
 
-    private Flux<String> listPostUrls() {
+    private Flux<Post.PostStatus> listPostUrls() {
         return client.list(Post.class, post -> post.isPublished() && !post.isDeleted()
                     && Post.VisibleEnum.PUBLIC.equals(post.getSpec().getVisible()),
                 defaultComparator())
-            .map(post -> post.getStatusOrDefault().getPermalink());
+            .map(Post::getStatusOrDefault);
     }
 
     Comparator<Post> defaultComparator() {
@@ -49,13 +49,13 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
         return Comparator.comparing(createTime).thenComparing(name);
     }
 
-    private Flux<String> listSinglePageUrls() {
+    private Flux<Post.PostStatus> listSinglePageUrls() {
         return client.list(SinglePage.class, singlePage -> singlePage.isPublished()
                     && Objects.equals(false, singlePage.getSpec().getDeleted())
                     && ExtensionOperator.isNotDeleted().test(singlePage)
                     && Post.VisibleEnum.PUBLIC.equals(singlePage.getSpec().getVisible()),
                 pageDefaultComparator())
-            .map(post -> post.getStatusOrDefault().getPermalink());
+            .map(SinglePage::getStatusOrDefault);
     }
 
     Comparator<SinglePage> pageDefaultComparator() {
