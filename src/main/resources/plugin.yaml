@@ -1,16 +1,16 @@
 apiVersion: plugin.halo.run/v1alpha1
 kind: Plugin
 metadata:
-  name: PluginSitemap
+  name: PluginSitemap-Custom
 spec:
   enabled: true
-  version: 1.0.2
+  version: 1.0.3
   requires: ">=2.0.0"
   author:
-    name: Halo OSS Team
-    website: https://github.com/halo-dev
-  logo: https://halo.run/logo
-  homepage: https://github.com/halo-sigs/plugin-sitemap
+    name: Halo OSS Team, Carol
+    website: https://github.com/halo-dev, https://blog.cnkj.site/
+  logo: https://blog.cnkj.site/upload/sitemap.jpg
+  homepage: https://redirect.cnkj.site:18092/gitea/plugin-sitemap
   displayName: "Sitemap"
   description: "为站点生成站点地图"
   license:

@@ -1,0 +1,15 @@
+apiVersion: v1alpha1
+kind: Setting
+metadata:
+  name: plugin-sitemap-settings
+spec:
+  forms:
+    - group: basic
+      label: 基本设置
+      formSchema:
+        - $formkit: text
+          if: $get(enable).value
+          name: siteUrl
+          label: 站点地址
+          placeholder: 请输入站点地址
+          help: 非必填。格式：http(s)://(www.)example.com，结尾无需加斜杠，未填写将使用自动获取到的站点地址
