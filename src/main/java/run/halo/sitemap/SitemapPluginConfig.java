@@ -50,7 +50,7 @@ public class SitemapPluginConfig {
                 SitemapGeneratorOptions options;
                 try {
                     options = SitemapGeneratorOptions.builder()
-                        .siteUrl(siteUrl.isEmpty() ? uri.toURL() : toUrl(siteUrl))
+                        .siteUrl(uri.toURL())
                         .build();
                 } catch (MalformedURLException e) {
                     throw Exceptions.propagate(e);
