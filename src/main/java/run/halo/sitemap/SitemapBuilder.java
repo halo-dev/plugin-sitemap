@@ -1,8 +1,6 @@
 package run.halo.sitemap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,11 +12,7 @@ import java.util.stream.Collectors;
  * @author guqing
  * @since 1.0.0
  */
-@Component
 public class SitemapBuilder {
-
-    @Autowired
-    private SitemapUrlSetting sitemapUrlSetting;
 
     public String withXMLTemplate(String content) {
         return """
@@ -42,13 +36,6 @@ public class SitemapBuilder {
      */
     public LinkedHashMap<String, String> normalizeSitemapEntry(SitemapEntry sitemapEntry) {
         LinkedHashMap<String, String> sitemapEntryMap = new LinkedHashMap<>(4, 1);
-
-        BaseSetting baseSetting = sitemapUrlSetting.getSettingConfig();
-
-        String siteUrl = baseSetting.getSiteUrl();
-        if (StringUtils.isNotEmpty(siteUrl)) {
-            sitemapEntry.setLoc(siteUrl);
-        }
 
         // Return keys in following order
         sitemapEntryMap.put("loc", sitemapEntry.getLoc());
