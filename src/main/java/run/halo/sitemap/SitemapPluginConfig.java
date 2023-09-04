@@ -54,8 +54,14 @@ public class SitemapPluginConfig {
                         }
                         url = uri.toURL();
                     }
+                    String prioritySetting = baseSetting.getPriority();
+                    Double priority = 1.0;
+                    if (StringUtils.isNotEmpty(prioritySetting)) {
+                        priority = Double.parseDouble(prioritySetting);
+                    }
                     options = SitemapGeneratorOptions.builder()
                         .siteUrl(url)
+                        .priority(priority)
                         .build();
                 } catch (MalformedURLException e) {
                     throw Exceptions.propagate(e);

@@ -4,11 +4,11 @@ metadata:
   name: PluginSitemap
 spec:
   enabled: true
-  version: 1.0.3
+  version: 1.0.4
   requires: ">=2.0.0"
   author:
-    name: Halo OSS Team, Carol
-    website: https://github.com/halo-dev, https://blog.cnkj.site/
+    name: Carol
+    website: https://blog.cnkj.site/
   logo: https://blog.cnkj.site/upload/sitemap.jpg
   homepage: https://redirect.cnkj.site:18092/gitea/plugin-sitemap
   settingName: plugin-sitemap-settings

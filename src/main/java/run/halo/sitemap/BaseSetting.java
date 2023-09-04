@@ -19,4 +19,6 @@ public class BaseSetting {
 
     private String siteUrl = "";
 
+    private String priority = "";
+
 }
