@@ -78,7 +78,7 @@ public class SitemapPluginConfig {
                         }
                         url = uri.toURL();
                     }
-                    String prioritySetting = baseSetting.getPriority();
+                    String prioritySetting = baseSetting.getPriority().trim();
                     Double priority = 1.0;
                     if (StringUtils.isNotEmpty(prioritySetting)) {
                         priority = Double.parseDouble(prioritySetting);
