@@ -2,6 +2,10 @@ apiVersion: plugin.halo.run/v1alpha1
 kind: Plugin
 metadata:
   name: PluginSitemap
+  annotations:
+    # Add supports for Halo App Store
+    # https://halo.run/store/apps/app-QDFMI
+    "store.halo.run/app-id": "app-QDFMI"
 spec:
   enabled: true
   version: 1.0.0
