@@ -1,10 +1,15 @@
 package run.halo.sitemap;
 
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,22 +25,30 @@ public class CachedSitemapGetterTest {
 
     @BeforeEach
     void setUp() {
-        when(lister.list()).thenReturn(
+        when(lister.list(any())).thenReturn(
             Flux.just(SitemapEntry.builder().loc("http://localhost:8090/about").build()));
         getter = new CachedSitemapGetter(lister);
     }
 
     @Test
-    void get() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(10);
+    void get() throws InterruptedException, ExecutionException {
+        var options = mock(SitemapGeneratorOptions.class);
 
-        for (int i = 0; i < countDownLatch.getCount(); i++) {
-            new Thread(() -> {
-                getter.get().block();
-                countDownLatch.countDown();
-            }).start();
+        getter.get(options).block();
+        verify(lister).list(options);
+
+        var executorService = Executors.newCachedThreadPool();
+
+        List<? extends Future<?>> futures = IntStream.range(0, 10)
+            .mapToObj(i -> executorService.submit(() -> {
+                getter.get(options).block();
+            }))
+            .toList();
+
+        for (Future<?> future : futures) {
+            future.get();
         }
-        countDownLatch.await();
-        verify(lister, times(1)).list();
+
+        verify(lister).list(options);
     }
 }
