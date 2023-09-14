@@ -1,0 +1,30 @@
+apiVersion: v1alpha1
+kind: Setting
+metadata:
+  name: sitemap-settings
+spec:
+  forms:
+    - group: robots
+      label: robots.txt 设置
+      formSchema:
+        - $formkit: radio
+          name: enable
+          id: enable
+          label: 启用自定义规则
+          value: true
+          options:
+            - label: 启用
+              value: true
+            - label: 关闭
+              value: false
+        - $formkit: textarea
+          if: $get(enable).value
+          name: rules
+          label: 规则
+          help: 编写 robots.txt 规则
+          rows: 10
+          value: |
+            User-agent: *
+            Allow: /
+            Disallow: /console
+
