@@ -2,6 +2,10 @@ apiVersion: plugin.halo.run/v1alpha1
 kind: Plugin
 metadata:
   name: PluginSitemap
+  annotations:
+    # Add supports for Halo App Store
+    # https://halo.run/store/apps/app-QDFMI
+    "store.halo.run/app-id": "app-QDFMI"
 spec:
   enabled: true
   version: 1.0.2
@@ -10,9 +14,11 @@ spec:
     name: Halo OSS Team
     website: https://github.com/halo-dev
   logo: logo.svg
-  homepage: https://github.com/halo-sigs/plugin-sitemap
+  homepage: https://github.com/halo-dev/plugin-sitemap
   displayName: "Sitemap"
   description: "为站点生成站点地图"
+  settingName: sitemap-settings
+  configMapName: sitemap-configMap
   license:
     - name: "GPL-3.0"
-      url: "https://github.com/halo-sigs/plugin-sitemap/blob/main/LICENSE"
+      url: "https://github.com/halo-dev/plugin-sitemap/blob/main/LICENSE"
