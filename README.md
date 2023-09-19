@@ -14,7 +14,7 @@ Halo 2.0 的站点 Sitemap 链接生成插件
 ## 开发环境
 
 ```bash
-git clone git@github.com:halo-sigs/plugin-sitemap.git
+git clone git@github.com:halo-dev/plugin-sitemap.git
 
 # 或者当你 fork 之后
 
