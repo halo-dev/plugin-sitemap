@@ -8,7 +8,7 @@ metadata:
     "store.halo.run/app-id": "app-QDFMI"
 spec:
   enabled: true
-  version: 1.0.3
+  version: 1.0.4
   requires: ">=2.0.0"
   author:
     name: Halo OSS Team

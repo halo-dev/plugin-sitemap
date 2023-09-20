@@ -91,6 +91,8 @@ public class SitemapGeneratorOptions {
             lastModifyTime = ((Post.PostStatus) object).getLastModifyTime();
         }else {
             url = object.toString();
+            // 非文章类和单页类地址不使用自定义权重
+            priority = 1.0;
         }
         if (StringUtils.isBlank(url)) {
             return null;
