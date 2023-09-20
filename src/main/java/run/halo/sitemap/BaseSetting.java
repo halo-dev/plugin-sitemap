@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 public class BaseSetting {
 
-    public static final String CONFIG_MAP_NAME = "plugin-sitemap-config";
+    public static final String CONFIG_MAP_NAME = "sitemap-config";
     public static final String GROUP = "basic";
 
     private Boolean enable = Boolean.FALSE;

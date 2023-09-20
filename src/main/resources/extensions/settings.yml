@@ -1,30 +1,57 @@
 apiVersion: v1alpha1
 kind: Setting
 metadata:
-  name: sitemap-settings
+    name: sitemap-settings
 spec:
-  forms:
-    - group: robots
-      label: robots.txt 设置
-      formSchema:
-        - $formkit: radio
-          name: enable
-          id: enable
-          label: 启用自定义规则
-          value: true
-          options:
-            - label: 启用
-              value: true
-            - label: 关闭
-              value: false
-        - $formkit: textarea
-          if: $get(enable).value
-          name: rules
-          label: 规则
-          help: 编写 robots.txt 规则
-          rows: 10
-          value: |
-            User-agent: *
-            Allow: /
-            Disallow: /console
+    forms:
+        -   group: basic
+            label: 基本设置
+            formSchema:
+                -   $formkit: radio
+                    name: enable
+                    id: enable
+                    key: enable
+                    label: 是否启用自定义站点设置
+                    help: 禁用后使用自动获取到的站点地址
+                    value: false
+                    options:
+                        -   label: 启用
+                            value: true
+                        -   label: 关闭
+                            value: false
+                -   $formkit: text
+                    if: $get(enable).value
+                    name: siteUrl
+                    label: 站点地址
+                    placeholder: 请输入站点地址
+                    help: 非必填。格式：http(s)://(www.)example.com，结尾无需加斜杠，未填写将使用自动获取到的站点地址。填写后请重启该插件以生效。
+                -   $formkit: text
+                    if: $get(enable).value
+                    name: priority
+                    label: 地址权重
+                    placeholder: 请输入全局站点地址权重
+                    help: 非必填。格式：1.0，未填写将使用默认权重值 1.0。
+        -   group: robots
+            label: robots.txt 设置
+            formSchema:
+                -   $formkit: radio
+                    name: enable
+                    id: enable
+                    label: 启用自定义规则
+                    value: true
+                    options:
+                        -   label: 启用
+                            value: true
+                        -   label: 关闭
+                            value: false
+                -   $formkit: textarea
+                    if: $get(enable).value
+                    name: rules
+                    label: 规则
+                    help: 编写 robots.txt 规则
+                    rows: 10
+                    value: |
+                        User-agent: *
+                        Allow: /
+                        Disallow: /console
 

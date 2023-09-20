@@ -4,6 +4,8 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 import java.net.MalformedURLException;
+import java.net.URL;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.CacheControl;
@@ -11,31 +13,21 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.Exceptions;
 import run.halo.app.infra.ExternalUrlSupplier;
-import run.halo.app.plugin.SettingFetcher;
 import run.halo.app.plugin.ReactiveSettingFetcher;
-
-import java.net.URL;
 
 @Component
 public class SitemapPluginConfig {
 
     private final ExternalUrlSupplier externalUrlSupplier;
 
-    private final SettingFetcher settingFetcher;
-
-    private final BaseSetting baseSetting;
-
 
     public SitemapPluginConfig(ExternalUrlSupplier externalUrlSupplier,
-        SettingFetcher settingFetcher, ReactiveSettingFetcher reactiveSettingFetcher) {
+        ReactiveSettingFetcher reactiveSettingFetcher) {
         this.externalUrlSupplier = externalUrlSupplier;
-        this.settingFetcher = settingFetcher;
         this.reactiveSettingFetcher = reactiveSettingFetcher;
-        this.baseSetting = this.settingFetcher.fetch(BaseSetting.GROUP, BaseSetting.class)
-            .orElseGet(BaseSetting::new);
     }
 
     private final ReactiveSettingFetcher reactiveSettingFetcher;
@@ -44,39 +36,46 @@ public class SitemapPluginConfig {
 
     @Bean
     RouterFunction<ServerResponse> sitemapRouterFunction(CachedSitemapGetter cachedSitemapGetter) {
-        return RouterFunctions.route(GET("/sitemap.xml")
-                .and(accept(MediaType.TEXT_XML)), request -> {
-                String siteUrl = baseSetting.getSiteUrl();
-
+        return RouterFunctions.route(GET("/sitemap.xml").and(accept(MediaType.TEXT_XML)),
+            request -> reactiveSettingFetcher.get("basic").flatMap(setting -> {
                 SitemapGeneratorOptions options;
                 try {
-                    URL url;
-                    if (StringUtils.isNotEmpty(siteUrl)) {
-                        url = new URL(siteUrl);
-                    } else {
-                        var uri = externalUrlSupplier.get();
-                        if (!uri.isAbsolute()) {
-                            uri = request.exchange().getRequest().getURI().resolve(uri);
-                        }
-                        url = uri.toURL();
-                    }
-                    String prioritySetting = baseSetting.getPriority().trim();
-                    double priority = 1.0;
-                    if (StringUtils.isNotEmpty(prioritySetting)) {
-                        priority = Double.parseDouble(prioritySetting);
-                    }
-                    options = SitemapGeneratorOptions.builder()
-                        .siteUrl(url)
-                        .priority(priority)
-                        .build();
+                    options = createOptions(request, setting);
                 } catch (MalformedURLException e) {
-                    throw Exceptions.propagate(e);
+                    return reactor.core.publisher.Mono.error(new RuntimeException(e));
                 }
                 return cachedSitemapGetter.get(options)
                     .flatMap(sitemap -> ServerResponse.ok()
                         .contentType(MediaType.TEXT_XML).bodyValue(sitemap));
+            }));
+    }
+
+    private SitemapGeneratorOptions createOptions(ServerRequest request,
+        JsonNode setting) throws MalformedURLException {
+        SitemapGeneratorOptions options;
+        URL url = null;
+        double priority = 1.0;
+        if (!setting.get("enable").asText().equals("true")) {
+            var uri = externalUrlSupplier.get();
+            if (!uri.isAbsolute()) {
+                uri = request.exchange().getRequest().getURI().resolve(uri);
             }
-        );
+            url = uri.toURL();
+        } else {
+            String siteUrl = setting.get("siteUrl").textValue().trim();
+            String prioritySetting = setting.get("priority").textValue().trim();
+            if (StringUtils.isNotEmpty(siteUrl)) {
+                url = new URL(siteUrl);
+            }
+            if (StringUtils.isNotEmpty(prioritySetting)) {
+                priority = Double.parseDouble(prioritySetting);
+            }
+        }
+        options = SitemapGeneratorOptions.builder()
+            .siteUrl(url)
+            .priority(priority)
+            .build();
+        return options;
     }
 
     @Bean
