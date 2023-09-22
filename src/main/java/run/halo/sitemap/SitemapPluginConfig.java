@@ -5,6 +5,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 
 import java.net.MalformedURLException;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -60,7 +61,9 @@ public class SitemapPluginConfig {
                         .bodyValue(defaultRule);
                 }
                 var uri = externalUrlSupplier.getURL(request.exchange().getRequest());
-                var sitemapURL = "Sitemap: " + uri + "sitemap.xml";
+                var sitemapURL = "Sitemap: "
+                    + StringUtils.appendIfMissing(uri.toString(), "/")
+                    + "sitemap.xml";
                 return ServerResponse.ok()
                     .cacheControl(CacheControl.noCache())
                     .contentType(MediaType.TEXT_PLAIN)
