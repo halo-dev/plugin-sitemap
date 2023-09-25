@@ -36,11 +36,14 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
             .map(options::transform);
     }
 
-    private Flux<String> listPostUrls() {
+    private Flux<UrlEntryMeta> listPostUrls() {
         return client.list(Post.class, post -> post.isPublished() && !post.isDeleted()
                     && Post.VisibleEnum.PUBLIC.equals(post.getSpec().getVisible()),
                 defaultComparator())
-            .map(post -> post.getStatusOrDefault().getPermalink());
+            .map(Post::getStatusOrDefault)
+            .map(status -> new UrlEntryMeta(status.getPermalink())
+                .setLastModifiedTime(status.getLastModifyTime())
+            );
     }
 
     Comparator<Post> defaultComparator() {
@@ -49,13 +52,16 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
         return Comparator.comparing(createTime).thenComparing(name);
     }
 
-    private Flux<String> listSinglePageUrls() {
+    private Flux<UrlEntryMeta> listSinglePageUrls() {
         return client.list(SinglePage.class, singlePage -> singlePage.isPublished()
                     && Objects.equals(false, singlePage.getSpec().getDeleted())
                     && ExtensionOperator.isNotDeleted().test(singlePage)
                     && Post.VisibleEnum.PUBLIC.equals(singlePage.getSpec().getVisible()),
                 pageDefaultComparator())
-            .map(post -> post.getStatusOrDefault().getPermalink());
+            .map(SinglePage::getStatusOrDefault)
+            .map(status -> new UrlEntryMeta(status.getPermalink())
+                .setLastModifiedTime(status.getLastModifyTime())
+            );
     }
 
     Comparator<SinglePage> pageDefaultComparator() {
@@ -65,21 +71,23 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
         return Comparator.comparing(createTime).thenComparing(name);
     }
 
-    private Flux<String> listCategoryUrls() {
+    private Flux<UrlEntryMeta> listCategoryUrls() {
         return client.list(Category.class,
                 category -> category.getMetadata().getDeletionTimestamp() == null,
                 Comparator.comparing(tag -> tag.getMetadata().getCreationTimestamp()))
-            .map(category -> category.getStatusOrDefault().getPermalink());
+            .map(Category::getStatusOrDefault)
+            .map(status -> new UrlEntryMeta(status.getPermalink()));
     }
 
-    private Flux<String> listTagUrls() {
+    private Flux<UrlEntryMeta> listTagUrls() {
         return client.list(Tag.class,
                 tag -> tag.getMetadata().getDeletionTimestamp() == null,
                 Comparator.comparing(tag -> tag.getMetadata().getCreationTimestamp()))
-            .map(tag -> tag.getStatusOrDefault().getPermalink());
+            .map(Tag::getStatusOrDefault)
+            .map(status -> new UrlEntryMeta(status.getPermalink()));
     }
 
-    private Flux<String> urlsForListPages() {
+    private Flux<UrlEntryMeta> urlsForListPages() {
         // TODO 优化系统其他路由获取
         return client.fetch(ConfigMap.class, "system")
             .mapNotNull(ConfigMap::getData)
@@ -92,7 +100,8 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                     StringUtils.prependIfMissing(themeRouteRules.getArchives(), "/")
                 );
             })
-            .flatMapMany(Flux::fromIterable);
+            .flatMapMany(Flux::fromIterable)
+            .map(url -> new UrlEntryMeta(url).setPriority(0.5));
     }
 
     @Data

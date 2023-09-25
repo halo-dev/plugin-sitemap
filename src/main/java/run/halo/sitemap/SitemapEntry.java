@@ -15,7 +15,6 @@ public class SitemapEntry {
      * <p>Parent tag for each URL entry. The remaining tags are children of this tag.</p>
      * required.
      */
-    @NonNull
     private String loc;
 
     private String lastmod;
