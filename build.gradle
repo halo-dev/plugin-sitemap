@@ -1,6 +1,6 @@
 plugins {
     id "io.freefair.lombok" version "8.0.0-rc2"
-    id "io.github.guqing.plugin-development" version "0.0.7-SNAPSHOT"
+    id "run.halo.plugin.devtools" version "0.0.7"
     id 'java'
 }
 
@@ -11,14 +11,6 @@ repositories {
     mavenCentral()
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' }
     maven { url 'https://repo.spring.io/milestone' }
-}
-
-jar {
-    enabled = true
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest.attributes(
-            'Plugin-Version': "${project.version}",
-    )
 }
 
 dependencies {
