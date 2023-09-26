@@ -10,6 +10,9 @@ import lombok.experimental.Accessors;
 public class UrlEntryMeta {
     private String url;
 
+    /**
+     * see also {@link SitemapGeneratorOptions#getPriority()}.
+     */
     private Double priority;
 
     private Instant lastModifiedTime;
