@@ -53,6 +53,24 @@ public class SitemapGeneratorOptions {
     @Builder.Default
     private ChangeFreqEnum changefreq = ChangeFreqEnum.DAILY;
 
+    /**
+     * How to assign sitemap priorities:
+     * <pre>
+     * 1.0-0.8
+     * Homepage, product information, landing pages.
+     *
+     * 0.7-0.4
+     * News articles, some weather services, blog posts, category pages, pages that no site would be complete without.
+     *
+     * 0.3-0.0
+     * FAQs, outdated info, old press releases, completely static pages that are still relevant enough to keep from deleting entirely.
+     * </pre>
+     *
+     * @see
+     * <a href="https://www.contentpowered.com/blog/xml-sitemap-priority-changefreq/">xml-sitemap-priority-changefreq</a>
+     * @see
+     * <a href="https://slickplan.com/blog/xml-sitemap-priority-changefreq">xml-sitemap-priority-changefreq</a>
+     */
     @Builder.Default
     private double priority = 0.7;
 
