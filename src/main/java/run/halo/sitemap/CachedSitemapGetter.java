@@ -17,7 +17,7 @@ public class CachedSitemapGetter {
         .concurrencyLevel(Runtime.getRuntime().availableProcessors())
         .initialCapacity(8)
         .maximumSize(8)
-        .expireAfterWrite(Duration.ofDays(1))
+        .expireAfterWrite(Duration.ofSeconds(30))
         .build();
 
     private final DefaultSitemapEntryLister lister;
