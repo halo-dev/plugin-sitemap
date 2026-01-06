@@ -29,10 +29,7 @@ public class SitemapPluginConfig {
     RouterFunction<ServerResponse> sitemapRouterFunction(CachedSitemapGetter cachedSitemapGetter) {
         return RouterFunctions.route(GET("/sitemap.xml")
                 .and(accept(MediaType.TEXT_XML)), request -> {
-                var url = externalUrlSupplier.getRaw();
-                if (url == null) {
-                    url = externalUrlSupplier.getURL(request.exchange().getRequest());
-                }
+                var url = externalUrlSupplier.getURL(request.exchange().getRequest());
                 var options = SitemapGeneratorOptions.builder()
                     .siteUrl(url)
                     .build();

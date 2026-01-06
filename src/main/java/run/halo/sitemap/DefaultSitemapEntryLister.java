@@ -4,10 +4,11 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import run.halo.app.core.extension.content.Category;
@@ -17,6 +18,8 @@ import run.halo.app.core.extension.content.Tag;
 import run.halo.app.extension.ConfigMap;
 import run.halo.app.extension.ExtensionOperator;
 import run.halo.app.extension.ReactiveExtensionClient;
+import run.halo.app.infra.SystemSetting;
+import run.halo.app.infra.SystemSetting.ThemeRouteRules;
 import run.halo.app.infra.utils.JsonUtils;
 
 @Component
@@ -89,28 +92,20 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
 
     private Flux<UrlEntryMeta> urlsForListPages() {
         // TODO 优化系统其他路由获取
-        return client.fetch(ConfigMap.class, "system")
+        return client.fetch(ConfigMap.class, SystemSetting.SYSTEM_CONFIG)
             .mapNotNull(ConfigMap::getData)
             .map(data -> {
-                String routeRuleConfig = data.get(ThemeRouteRules.GROUP);
-                ThemeRouteRules themeRouteRules =
-                    JsonUtils.jsonToObject(routeRuleConfig, ThemeRouteRules.class);
-                return List.of(StringUtils.prependIfMissing(themeRouteRules.getTags(), "/"),
-                    StringUtils.prependIfMissing(themeRouteRules.getCategories(), "/"),
-                    StringUtils.prependIfMissing(themeRouteRules.getArchives(), "/")
+                var themeRouteRules = Optional.ofNullable(data.get(ThemeRouteRules.GROUP))
+                    .filter(StringUtils::isNotBlank)
+                    .map(json -> JsonUtils.jsonToObject(json, ThemeRouteRules.class))
+                    .orElseGet(ThemeRouteRules::empty);
+                return List.of(Strings.CS.prependIfMissing(themeRouteRules.getTags(), "/"),
+                    Strings.CS.prependIfMissing(themeRouteRules.getCategories(), "/"),
+                    Strings.CS.prependIfMissing(themeRouteRules.getArchives(), "/")
                 );
             })
             .flatMapMany(Flux::fromIterable)
             .map(url -> new UrlEntryMeta(url).setPriority(0.5));
     }
 
-    @Data
-    public static class ThemeRouteRules {
-        public static final String GROUP = "routeRules";
-
-        private String categories;
-        private String archives;
-        private String post;
-        private String tags;
-    }
 }
