@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import run.halo.app.core.extension.content.Category;
@@ -99,9 +98,10 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                     .filter(StringUtils::isNotBlank)
                     .map(json -> JsonUtils.jsonToObject(json, ThemeRouteRules.class))
                     .orElseGet(ThemeRouteRules::empty);
-                return List.of(Strings.CS.prependIfMissing(themeRouteRules.getTags(), "/"),
-                    Strings.CS.prependIfMissing(themeRouteRules.getCategories(), "/"),
-                    Strings.CS.prependIfMissing(themeRouteRules.getArchives(), "/")
+                return List.of(
+                    StringUtils.prependIfMissing(themeRouteRules.getTags(), "/"),
+                    StringUtils.prependIfMissing(themeRouteRules.getCategories(), "/"),
+                    StringUtils.prependIfMissing(themeRouteRules.getArchives(), "/")
                 );
             })
             .flatMapMany(Flux::fromIterable)
