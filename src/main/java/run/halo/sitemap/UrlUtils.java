@@ -32,7 +32,7 @@ public final class UrlUtils {
             return null;
         }
         try {
-            return new URI(escapeSitemapUrl(s));
+            return new URI(s);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

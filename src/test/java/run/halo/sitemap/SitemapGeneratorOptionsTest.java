@@ -36,7 +36,7 @@ class SitemapGeneratorOptionsTest {
         assertEquals(0.7, entry.getPriority());
 
         entry = options.transform("https://guqing.xyz/hello-中国<>&");
-        assertEquals("https://guqing.xyz/hello-%E4%B8%AD%E5%9B%BD&amp;lt;&amp;gt;&amp;amp;",
+        assertEquals("https://guqing.xyz/hello-%E4%B8%AD%E5%9B%BD&lt;&gt;&amp;",
             entry.getLoc());
 
         assertEquals(ChangeFreqEnum.DAILY, entry.getChangefreq());
