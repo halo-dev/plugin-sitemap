@@ -3,6 +3,7 @@ package run.halo.sitemap;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
+import java.nio.charset.StandardCharsets;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
@@ -33,9 +34,12 @@ public class SitemapPluginConfig {
                 var options = SitemapGeneratorOptions.builder()
                     .siteUrl(url)
                     .build();
+                var xmlMediaType = new MediaType(MediaType.TEXT_XML, StandardCharsets.UTF_8);
                 return cachedSitemapGetter.get(options)
+                    .filter(sitemap -> !sitemap.isBlank())
                     .flatMap(sitemap -> ServerResponse.ok()
-                        .contentType(MediaType.TEXT_XML).bodyValue(sitemap));
+                        .contentType(xmlMediaType).bodyValue(sitemap))
+                    .switchIfEmpty(ServerResponse.noContent().build());
             }
         );
     }
