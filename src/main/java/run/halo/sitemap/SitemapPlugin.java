@@ -1,8 +1,8 @@
 package run.halo.sitemap;
 
-import org.pf4j.PluginWrapper;
 import org.springframework.stereotype.Component;
 import run.halo.app.plugin.BasePlugin;
+import run.halo.app.plugin.PluginContext;
 
 /**
  * @author ryanwang
@@ -11,8 +11,8 @@ import run.halo.app.plugin.BasePlugin;
 @Component
 public class SitemapPlugin extends BasePlugin {
 
-    public SitemapPlugin(PluginWrapper wrapper) {
-        super(wrapper);
+    public SitemapPlugin(PluginContext pluginContext) {
+        super(pluginContext);
     }
 
     @Override
