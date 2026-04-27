@@ -8,13 +8,14 @@ metadata:
     "store.halo.run/app-id": "app-QDFMI"
 spec:
   enabled: true
-  version: 1.0.2
   requires: ">=2.22.7"
   author:
-    name: Halo OSS Team
+    name: Halo
     website: https://github.com/halo-dev
   logo: logo.svg
-  homepage: https://github.com/halo-dev/plugin-sitemap
+  repo: https://github.com/halo-dev/plugin-sitemap
+  issues: https://github.com/halo-dev/plugin-sitemap/issues
+  homepage: https://www.halo.run/store/apps/app-QDFMI
   displayName: "Sitemap"
   description: "为站点生成站点地图"
   settingName: sitemap-settings
