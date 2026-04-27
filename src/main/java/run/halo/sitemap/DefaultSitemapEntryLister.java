@@ -3,7 +3,6 @@ package run.halo.sitemap;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
@@ -43,6 +42,7 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                     && Post.VisibleEnum.PUBLIC.equals(post.getSpec().getVisible()),
                 defaultComparator())
             .map(Post::getStatusOrDefault)
+            .filter(status -> StringUtils.isNotBlank(status.getPermalink()))
             .map(status -> new UrlEntryMeta(status.getPermalink())
                 .setLastModifiedTime(status.getLastModifyTime())
             );
@@ -56,11 +56,11 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
 
     private Flux<UrlEntryMeta> listSinglePageUrls() {
         return client.list(SinglePage.class, singlePage -> singlePage.isPublished()
-                    && Objects.equals(false, singlePage.getSpec().getDeleted())
                     && ExtensionOperator.isNotDeleted().test(singlePage)
                     && Post.VisibleEnum.PUBLIC.equals(singlePage.getSpec().getVisible()),
                 pageDefaultComparator())
             .map(SinglePage::getStatusOrDefault)
+            .filter(status -> StringUtils.isNotBlank(status.getPermalink()))
             .map(status -> new UrlEntryMeta(status.getPermalink())
                 .setLastModifiedTime(status.getLastModifyTime())
             );
@@ -78,6 +78,7 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                 category -> category.getMetadata().getDeletionTimestamp() == null,
                 Comparator.comparing(tag -> tag.getMetadata().getCreationTimestamp()))
             .map(Category::getStatusOrDefault)
+            .filter(status -> StringUtils.isNotBlank(status.getPermalink()))
             .map(status -> new UrlEntryMeta(status.getPermalink()));
     }
 
@@ -86,11 +87,11 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                 tag -> tag.getMetadata().getDeletionTimestamp() == null,
                 Comparator.comparing(tag -> tag.getMetadata().getCreationTimestamp()))
             .map(Tag::getStatusOrDefault)
+            .filter(status -> StringUtils.isNotBlank(status.getPermalink()))
             .map(status -> new UrlEntryMeta(status.getPermalink()));
     }
 
     private Flux<UrlEntryMeta> urlsForListPages() {
-        // TODO 优化系统其他路由获取
         return client.fetch(ConfigMap.class, SystemSetting.SYSTEM_CONFIG)
             .mapNotNull(ConfigMap::getData)
             .map(data -> {
@@ -99,6 +100,7 @@ public class DefaultSitemapEntryLister implements SitemapEntryLister {
                     .map(json -> JsonUtils.jsonToObject(json, ThemeRouteRules.class))
                     .orElseGet(ThemeRouteRules::empty);
                 return List.of(
+                    "/",
                     StringUtils.prependIfMissing(themeRouteRules.getTags(), "/"),
                     StringUtils.prependIfMissing(themeRouteRules.getCategories(), "/"),
                     StringUtils.prependIfMissing(themeRouteRules.getArchives(), "/")
