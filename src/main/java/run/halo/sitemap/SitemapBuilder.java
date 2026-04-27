@@ -34,18 +34,10 @@ public class SitemapBuilder {
      * @see <a href="https://www.w3schools.com/xml/el_sequence.asp">el_sequence</a>
      */
     public LinkedHashMap<String, String> normalizeSitemapEntry(SitemapEntry sitemapEntry) {
-        LinkedHashMap<String, String> sitemapEntryMap = new LinkedHashMap<>(4, 1);
-        // Return keys in following order
+        LinkedHashMap<String, String> sitemapEntryMap = new LinkedHashMap<>(2, 1);
         sitemapEntryMap.put("loc", sitemapEntry.getLoc());
         if (StringUtils.isNotBlank(sitemapEntry.getLastmod())) {
             sitemapEntryMap.put("lastmod", sitemapEntry.getLastmod());
-        }
-        ChangeFreqEnum changefreq = sitemapEntry.getChangefreq();
-        if (changefreq != null) {
-            sitemapEntryMap.put("changefreq", changefreq.name().toLowerCase());
-        }
-        if (sitemapEntry.getPriority() != null) {
-            sitemapEntryMap.put("priority", sitemapEntry.getPriority().toString());
         }
         return sitemapEntryMap;
     }

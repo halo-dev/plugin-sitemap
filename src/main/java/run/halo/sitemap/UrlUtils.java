@@ -20,11 +20,11 @@ public final class UrlUtils {
      */
     public static String escapeSitemapUrl(String url) {
         Assert.notNull(url, "The url must not be null");
-        return url.replaceAll("&", "&amp;")
-            .replaceAll("'", "&apos;")
-            .replaceAll("\"", "&quot;")
-            .replaceAll(">", "&gt;")
-            .replaceAll("<", "&lt;");
+        return url.replace("&", "&amp;")
+            .replace("'", "&apos;")
+            .replace("\"", "&quot;")
+            .replace(">", "&gt;")
+            .replace("<", "&lt;");
     }
 
     public static URI toURI(String s) {
@@ -32,7 +32,7 @@ public final class UrlUtils {
             return null;
         }
         try {
-            return new URI(escapeSitemapUrl(s));
+            return new URI(s);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

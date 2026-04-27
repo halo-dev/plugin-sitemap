@@ -1,39 +1,33 @@
 package run.halo.sitemap;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.AsyncCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import java.time.Duration;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @Component
 @AllArgsConstructor
 public class CachedSitemapGetter {
 
-    private final Cache<SitemapGeneratorOptions, String> cache = CacheBuilder.newBuilder()
-        .concurrencyLevel(Runtime.getRuntime().availableProcessors())
-        .initialCapacity(8)
-        .maximumSize(8)
+    private final AsyncCache<String, String> cache = Caffeine.newBuilder()
         .expireAfterWrite(Duration.ofSeconds(30))
-        .build();
+        .maximumSize(8)
+        .buildAsync();
 
     private final DefaultSitemapEntryLister lister;
 
     public Mono<String> get(SitemapGeneratorOptions options) {
-        return Mono.fromCallable(() -> cache.get(options, () -> lister.list(options)
-                .collectList()
-                .map(entries -> {
-                    String xml = new SitemapBuilder()
-                        .buildSitemapXml(entries);
-                    cache.put(options, xml);
-                    return xml;
-                })
-                .defaultIfEmpty(StringUtils.EMPTY)
-                .block()
-            ))
-            .subscribeOn(Schedulers.boundedElastic());
+        String key = options.getSiteUrl().toString();
+        return Mono.fromFuture(() ->
+            cache.get(key, (k, executor) ->
+                lister.list(options)
+                    .collectList()
+                    .map(entries -> new SitemapBuilder().buildSitemapXml(entries))
+                    .defaultIfEmpty("")
+                    .toFuture()
+            )
+        );
     }
 }

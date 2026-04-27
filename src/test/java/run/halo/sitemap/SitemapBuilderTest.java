@@ -20,14 +20,10 @@ class SitemapBuilderTest {
         entries.add(SitemapEntry.builder()
             .loc("https://halo.run/about")
             .lastmod("2022-11-12T13:57:43.898+0800")
-            .changefreq(ChangeFreqEnum.DAILY)
-            .priority(0.7)
             .build());
         entries.add(SitemapEntry.builder()
             .loc("https://halo.run/categories")
             .lastmod("2022-11-12T13:57:43.898+0800")
-            .changefreq(ChangeFreqEnum.DAILY)
-            .priority(0.7)
             .build());
         String s = new SitemapBuilder().buildSitemapXml(entries);
         assertEquals("""
@@ -41,13 +37,9 @@ class SitemapBuilderTest {
                     xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
             <url><loc>https://halo.run/about</loc>
             <lastmod>2022-11-12T13:57:43.898+0800</lastmod>
-            <changefreq>daily</changefreq>
-            <priority>0.7</priority>
             </url>
             <url><loc>https://halo.run/categories</loc>
             <lastmod>2022-11-12T13:57:43.898+0800</lastmod>
-            <changefreq>daily</changefreq>
-            <priority>0.7</priority>
             </url>
 
             </urlset>
